@@ -1,8 +1,23 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger } from 'nestjs-pino';
+import { ValidationPipe } from '@nestjs/common';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+  app.useGlobalFilters(new PrismaExceptionFilter());
+  app.useLogger(app.get(Logger));
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+bootstrap().catch((error) => console.log(error));
