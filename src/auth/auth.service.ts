@@ -28,6 +28,7 @@ export class AuthService {
       data: { ...rest, email, password: hashedPassword },
     });
   }
+
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
     const user = await this.prisma.user.findUnique({ where: { email } });
@@ -51,5 +52,5 @@ export class AuthService {
       refreshToken,
     };
   }
-  //   async refreshToken(token: string) {}
+  private async refreshToken(token: string) {}
 }
