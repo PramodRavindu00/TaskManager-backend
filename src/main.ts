@@ -21,6 +21,6 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new PrismaExceptionFilter());
   app.useLogger(app.get(Logger));
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 5000);
 }
 bootstrap().catch((error) => console.log(error));

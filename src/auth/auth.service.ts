@@ -7,8 +7,8 @@ import { PrismaService } from '../common/prisma/prisma.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
-import { UserRole } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { UserRole } from '@prisma/client';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,15 +17,21 @@ export class AuthService {
   ) {}
 
   async signup(signUpDto: SignUpDto) {
-    const { email, password, ...rest } = signUpDto;
+    const { email, password, firstName, lastName } = signUpDto;
     const emailInUse = await this.prisma.user.findUnique({ where: { email } });
     if (emailInUse) {
       throw new BadRequestException('Email already in use');
     }
     const hashedPassword: string = await bcrypt.hash(password, 10);
-
+    const userData = {
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      userRole: UserRole.User as UserRole,
+    };
     await this.prisma.user.create({
-      data: { ...rest, email, password: hashedPassword },
+      data: userData,
     });
   }
 
@@ -52,5 +58,5 @@ export class AuthService {
       refreshToken,
     };
   }
-  private async refreshToken(token: string) {}
+  // private async refreshToken(token: string) {}
 }

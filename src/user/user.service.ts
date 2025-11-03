@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../common/prisma/prisma.service';
 import paginateData, { PaginateDto } from '../common/utils/paginate';
@@ -7,12 +6,6 @@ import paginateData, { PaginateDto } from '../common/utils/paginate';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async create(dto: CreateUserDto) {
-    await this.prisma.user.create({
-      data: dto,
-    });
-  }
 
   async findAll(paginate: PaginateDto) {
     const pagination = paginateData(paginate);
