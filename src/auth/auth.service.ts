@@ -9,6 +9,7 @@ import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@prisma/client';
+import { JwtPayload } from '../common/types/types';
 @Injectable()
 export class AuthService {
   constructor(
@@ -58,5 +59,24 @@ export class AuthService {
       refreshToken,
     };
   }
-  // private async refreshToken(token: string) {}
+
+  async refreshToken(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify<JwtPayload>(refreshToken);
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.userId },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User no longer exists');
+      }
+
+      return this.generateUserToken(user.id, user.userRole);
+    } catch (error) {
+      console.error(error);
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  // async getLoggedUser(token: string) {}
 }
