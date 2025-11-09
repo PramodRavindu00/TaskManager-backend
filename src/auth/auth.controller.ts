@@ -5,14 +5,17 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthCookieInterceptor } from '../common/interceptors/auth-cookie.interceptor';
-import { Cookies } from '../common/decorators/cookies';
+import { Cookies } from '../common/decorators/cookies.decorator';
+import { AuthGuard } from '../common/guards/auth.guard';
+import type { CurrentUserType } from '../common/types/types';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -33,9 +36,12 @@ export class AuthController {
   @Get('refresh')
   @UseInterceptors(AuthCookieInterceptor)
   refresh(@Cookies('refreshToken') refreshToken: string) {
-    if (!refreshToken) {
-      throw new UnauthorizedException('No refresh token provided');
-    }
     return this.authService.refreshToken(refreshToken);
+  }
+
+  @Get('loggedUser')
+  @UseGuards(AuthGuard)
+  getLoggedUser(@CurrentUser() user: CurrentUserType) {
+    return this.authService.getLoggedUser(user.id);
   }
 }

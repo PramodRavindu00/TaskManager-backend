@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@prisma/client';
 import { JwtPayload } from '../common/types/types';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,7 +30,7 @@ export class AuthService {
       lastName,
       email,
       password: hashedPassword,
-      userRole: UserRole.User as UserRole,
+      role: UserRole.User as UserRole,
     };
     await this.prisma.user.create({
       data: userData,
@@ -45,8 +46,9 @@ export class AuthService {
 
     if (!isPasswordMatching)
       throw new UnauthorizedException('Invalid credentials');
-    return this.generateUserToken(user.id, user.userRole);
+    return this.generateUserToken(user.id, user.role);
   }
+
   private generateUserToken(userId: string, role: UserRole) {
     const accessToken = this.jwtService.sign({ userId, role });
     const refreshToken = this.jwtService.sign(
@@ -61,6 +63,9 @@ export class AuthService {
   }
 
   async refreshToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
     try {
       const payload = this.jwtService.verify<JwtPayload>(refreshToken);
       const user = await this.prisma.user.findUnique({
@@ -71,12 +76,23 @@ export class AuthService {
         throw new UnauthorizedException('User no longer exists');
       }
 
-      return this.generateUserToken(user.id, user.userRole);
+      return this.generateUserToken(user.id, user.role);
     } catch (error) {
       console.error(error);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
 
-  // async getLoggedUser(token: string) {}
+  async getLoggedUser(id: string) {
+    return await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        role: true,
+      },
+    });
+  }
 }
