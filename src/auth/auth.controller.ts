@@ -11,11 +11,12 @@ import {
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { AuthCookieInterceptor } from '../common/interceptors/auth-cookie.interceptor';
+import { SetAuthCookie } from '../common/interceptors/set-auth-cookie.interceptor';
 import { Cookies } from '../common/decorators/cookies.decorator';
 import { AuthGuard } from '../common/guards/auth.guard';
 import type { CurrentUserType } from '../common/types/types';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { ClearAuthCookie } from '../common/interceptors/clear-auth-cookie.interceptor';
 
 @Controller('auth')
 export class AuthController {
@@ -28,13 +29,13 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  @UseInterceptors(AuthCookieInterceptor) //using refresh token cookie creating interceptors
+  @UseInterceptors(SetAuthCookie) //using refresh token cookie creating interceptors
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 
   @Get('refresh')
-  @UseInterceptors(AuthCookieInterceptor)
+  @UseInterceptors(SetAuthCookie)
   refresh(@Cookies('refreshToken') refreshToken: string) {
     return this.authService.refreshToken(refreshToken);
   }
@@ -43,5 +44,13 @@ export class AuthController {
   @UseGuards(AuthGuard)
   getLoggedUser(@CurrentUser() user: CurrentUserType) {
     return this.authService.getLoggedUser(user.id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(ClearAuthCookie)
+  logout() {
+    return { message: 'logged Out' };
   }
 }

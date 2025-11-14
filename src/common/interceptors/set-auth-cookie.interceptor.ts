@@ -8,7 +8,7 @@ import { Response } from 'express';
 import { map, Observable, tap } from 'rxjs';
 
 @Injectable()
-export class AuthCookieInterceptor implements NestInterceptor {
+export class SetAuthCookie implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const ctx = context.switchToHttp();
     const res = ctx.getResponse<Response>();
