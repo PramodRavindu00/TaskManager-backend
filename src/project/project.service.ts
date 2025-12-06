@@ -36,22 +36,22 @@ export class ProjectService {
     return { data, count };
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} project`;
+  findOne(projectId: string) {
+    return `This action returns a #${projectId} project`;
   }
 
   async update(
-    id: string,
+    projectId: string,
     updateProjectDto: UpdateProjectDto,
     user: CurrentUserType,
   ) {
     await this.prisma.project.update({
-      where: { id },
+      where: { id: projectId },
       data: { ...updateProjectDto, updatedBy: user.id },
     });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} project`;
+  remove(projectId: string) {
+    return `This action removes a #${projectId} project`;
   }
 }

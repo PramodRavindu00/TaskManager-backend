@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
+import { Request, Response } from 'express';
 
 @Module({
   imports: [
@@ -28,16 +29,27 @@ import { AppController } from './app.controller';
     }),
     LoggerModule.forRoot({
       pinoHttp: {
+        serializers: {
+          req(req: Request) {
+            return {
+              method: req.method,
+              url: req.url,
+            };
+          },
+          res(res: Response) {
+            return {
+              statusCode: res.statusCode,
+            };
+          },
+        },
         transport: {
           target: 'pino-pretty',
           options: {
             colorize: true,
             singleLine: true,
             levelFirst: true,
-            ignore: 'pid,hostname,req,res,responseTime',
           },
         },
-        quietReqLogger: true,
       },
     }),
     UserModule,

@@ -1,11 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateProjectDto {
-  @IsNotEmpty()
+  @IsDefined()
   @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
+  @IsDefined()
   @IsString()
+  @IsNotEmpty()
   description: string;
 }

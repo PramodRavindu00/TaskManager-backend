@@ -35,22 +35,22 @@ export class ProjectController {
     return this.projectService.findAll(paginate);
   }
 
-  @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.projectService.findOne(id);
+  @Get(':projectId')
+  findOne(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
+    return this.projectService.findOne(projectId);
   }
 
-  @Patch(':id')
+  @Patch(':projectId')
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('projectId', new ParseUUIDPipe()) projectId: string,
     @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: CurrentUserType,
   ) {
-    return this.projectService.update(id, updateProjectDto, user);
+    return this.projectService.update(projectId, updateProjectDto, user);
   }
 
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.projectService.remove(id);
+  @Delete(':projectId')
+  remove(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
+    return this.projectService.remove(projectId);
   }
 }

@@ -1,4 +1,10 @@
-import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from './common/guards/auth.guard';
 
 @Controller('health')
@@ -14,9 +20,6 @@ export class AppController {
   @UseGuards(AuthGuard)
   @Get('private')
   privateHealth() {
-    return {
-      status: HttpStatus.OK,
-      timestamp: new Date().toISOString(),
-    };
+    throw new InternalServerErrorException('test Exception');
   }
 }

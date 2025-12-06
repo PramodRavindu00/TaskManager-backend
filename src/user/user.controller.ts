@@ -21,21 +21,21 @@ export class UserController {
     return this.userService.findAll(paginate);
   }
 
-  @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.userService.findOne(id);
+  @Get(':userId')
+  findOne(@Param('userId', new ParseUUIDPipe()) userId: string) {
+    return this.userService.findOne(userId);
   }
 
-  @Patch(':id')
+  @Patch(':userId')
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('userId', new ParseUUIDPipe()) userId: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    return this.userService.update(userId, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.userService.remove(id);
+  @Delete(':userId')
+  remove(@Param('userId', new ParseUUIDPipe()) userId: string) {
+    return this.userService.remove(userId);
   }
 }

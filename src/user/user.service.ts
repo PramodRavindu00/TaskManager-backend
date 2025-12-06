@@ -16,22 +16,22 @@ export class UserService {
     return { data, count };
   }
 
-  async findOne(id: string) {
+  async findOne(userId: string) {
     return await this.prisma.user.findUniqueOrThrow({
-      where: { id },
+      where: { id: userId },
     });
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(userId: string, dto: UpdateUserDto) {
     await this.prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data: dto,
     });
   }
 
-  async remove(id: string) {
+  async remove(userId: string) {
     await this.prisma.user.delete({
-      where: { id },
+      where: { id: userId },
     });
   }
 }
