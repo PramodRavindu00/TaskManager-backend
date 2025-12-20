@@ -3,13 +3,13 @@ import {
   Get,
   HttpStatus,
   InternalServerErrorException,
-  UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from './common/guards/auth.guard';
+import { Public } from './common/decorators/public.decorator';
 
 @Controller('health')
 export class AppController {
   @Get('public')
+  @Public()
   publicHealth() {
     return {
       status: HttpStatus.OK,
@@ -17,7 +17,6 @@ export class AppController {
     };
   }
 
-  @UseGuards(AuthGuard)
   @Get('private')
   privateHealth() {
     throw new InternalServerErrorException('test Exception');

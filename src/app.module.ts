@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { Request, Response } from 'express';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
   imports: [
@@ -58,6 +60,7 @@ import { Request, Response } from 'express';
     PrismaModule,
     AuthModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
   controllers: [AppController],
 })
 export class AppModule {}

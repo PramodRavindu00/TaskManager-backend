@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,7 +12,6 @@ import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { SetAuthCookie } from '../common/interceptors/set-auth-cookie.interceptor';
 import { Cookies } from '../common/decorators/cookies.decorator';
-import { AuthGuard } from '../common/guards/auth.guard';
 import type { CurrentUserType } from '../common/types/types';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { ClearAuthCookie } from '../common/interceptors/clear-auth-cookie.interceptor';
@@ -48,14 +46,12 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Get('loggedUser')
-  @UseGuards(AuthGuard)
   getLoggedUser(@CurrentUser() user: CurrentUserType) {
     return this.authService.getLoggedUser(user.id);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  @UseGuards(AuthGuard)
   @UseInterceptors(ClearAuthCookie)
   logout() {
     return { message: 'logged Out' };

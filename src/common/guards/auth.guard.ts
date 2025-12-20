@@ -9,17 +9,24 @@ import { Request } from 'express';
 import { CustomRequest, JwtPayload } from '../types/types';
 import { PrismaService } from '../prisma/prisma.service';
 import { PinoLogger } from 'nestjs-pino';
+import { Reflector } from '@nestjs/core';
+import { isPublic } from '../decorators/public.decorator';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly logger: PinoLogger,
+    private reflector: Reflector,
   ) {
     this.logger.setContext(AuthGuard.name);
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<CustomRequest>();
+    const isPublicApi = this.reflector.get(isPublic, context.getHandler());
+
+    if (isPublicApi) return true;
+
     const token = this.extractTokenFromHeader(req);
     if (!token) {
       throw new UnauthorizedException('Invalid Token');
