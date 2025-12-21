@@ -1,6 +1,3 @@
-import { SetMetadata } from '@nestjs/common';
-import { UserRole } from '@prisma/client';
+import { Reflector } from '@nestjs/core';
 
-export const PROJECT_ROLES = 'PROJECT_ROLES';
-export const SystemRoles = (...roles: UserRole[]) =>
-  SetMetadata(PROJECT_ROLES, roles);
+export const ProjectRoles = () => Reflector.createDecorator<string[]>();

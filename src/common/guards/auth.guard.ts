@@ -10,7 +10,7 @@ import { CustomRequest, JwtPayload } from '../types/types';
 import { PrismaService } from '../prisma/prisma.service';
 import { PinoLogger } from 'nestjs-pino';
 import { Reflector } from '@nestjs/core';
-import { isPublic } from '../decorators/public.decorator';
+import { PUBLIC } from '../decorators/public.decorator';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<CustomRequest>();
-    const isPublicApi = this.reflector.get(isPublic, context.getHandler());
+    const isPublicApi = this.reflector.get(PUBLIC, context.getHandler());
 
     if (isPublicApi) return true;
 

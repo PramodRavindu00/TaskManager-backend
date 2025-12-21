@@ -11,12 +11,14 @@ import {
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginateDto } from '../common/utils/paginate';
+import { Roles } from '../common/decorators/role.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @Roles('Admin')
   findAll(@Query() paginate: PaginateDto) {
     return this.userService.findAll(paginate);
   }
