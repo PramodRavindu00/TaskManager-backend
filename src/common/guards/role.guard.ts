@@ -22,7 +22,7 @@ export class RoleGuard implements CanActivate {
     const req = context.switchToHttp().getRequest<CustomRequest>();
     const roles = this.reflector.get<UserRole[]>(ROLES, context.getHandler());
 
-    // authorization wise public endpoint for all user roles
+    // if no user roles were set it means accessible for all user roles
     if (!roles || roles.length === 0) {
       return true;
     }
