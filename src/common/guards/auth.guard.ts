@@ -29,7 +29,8 @@ export class AuthGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(req);
     if (!token) {
-      throw new UnauthorizedException('Invalid Token');
+      this.logger.error('Invalid token');
+      throw new UnauthorizedException();
     }
     try {
       const payLoad: JwtPayload = this.jwtService.verify(token); //if this fails moves to catch block
@@ -46,14 +47,17 @@ export class AuthGuard implements CanActivate {
         },
       });
 
-      //access token is valid somehow , but user actually deleted
-      if (!user) throw new UnauthorizedException('User not found');
+      //access token is valid somehow , but user not found probably deleted
+      if (!user) {
+        this.logger.error('User not found');
+        throw new UnauthorizedException();
+      }
 
       req.user = user;
       return true; // return true if no error
     } catch (error) {
       this.logger.error(error);
-      throw new UnauthorizedException('Invalid Token');
+      throw new UnauthorizedException();
     }
   }
 

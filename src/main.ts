@@ -28,7 +28,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Taskium Backend API')
     .setDescription(
-      'API documentation for the Project & Task Management Project',
+      'Documentation for the Taskium - Project & Task Management API',
     )
     .setVersion('1.0')
     .build();

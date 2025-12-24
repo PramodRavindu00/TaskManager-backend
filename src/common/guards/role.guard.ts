@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CustomRequest } from '../types/types';
 import { PinoLogger } from 'nestjs-pino';
@@ -26,14 +27,17 @@ export class RoleGuard implements CanActivate {
     if (!roles || roles.length === 0) {
       return true;
     }
-    const userRole = req?.user?.role;
-
-    if (!userRole || !roles.includes(userRole)) {
+    const user = req?.user;
+    if (!user) {
+      this.logger.error('User not found');
+      throw new UnauthorizedException();
+    }
+    if (!user?.role || !roles.includes(user?.role)) {
       this.logger.warn(
-        { userRole, requiredRoles: roles },
+        { receivedRoles: user?.role, requiredRoles: roles },
         'Access denied due to insufficient user role',
       );
-      throw new ForbiddenException("User doesn't have access to this endpoint");
+      throw new ForbiddenException("User doesn't have access to this resource");
     }
     return true;
   }

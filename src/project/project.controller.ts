@@ -14,7 +14,9 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { CurrentUserType } from '../common/types/types';
 import { PaginateDto } from '../common/utils/paginate';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
