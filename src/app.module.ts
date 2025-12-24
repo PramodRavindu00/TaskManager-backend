@@ -12,6 +12,7 @@ import { Request, Response } from 'express';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { RoleGuard } from './common/guards/role.guard';
+import { ProjectMemberModule } from './project-member/project-member.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { RoleGuard } from './common/guards/role.guard';
     ProjectModule,
     PrismaModule,
     AuthModule,
+    ProjectMemberModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },

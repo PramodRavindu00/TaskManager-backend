@@ -14,6 +14,7 @@ import { PaginateDto } from '../common/utils/paginate';
 import { Roles } from '../common/decorators/role.decorator';
 
 @Controller('user')
+@Roles('Admin') //admin only endpoints
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

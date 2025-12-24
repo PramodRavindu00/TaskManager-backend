@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -15,8 +16,11 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { CurrentUserType } from '../common/types/types';
 import { PaginateDto } from '../common/utils/paginate';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ProjectRoleGuard } from '../common/guards/project.role.guard';
+import { ProjectRoles } from '../common/decorators/project.role.decorator';
 
 @ApiBearerAuth()
+@UseGuards(ProjectRoleGuard)
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
@@ -40,6 +44,7 @@ export class ProjectController {
   }
 
   @Patch(':projectId')
+  @ProjectRoles('Admin')
   update(
     @Param('projectId', new ParseUUIDPipe()) projectId: string,
     @Body() updateProjectDto: UpdateProjectDto,
