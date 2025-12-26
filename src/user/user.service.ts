@@ -18,24 +18,24 @@ export class UserService {
     return { data: plainToInstance(UserResponseDto, data), count };
   }
 
-  async findOne(userId: string) {
+  async findOne(id: string) {
     const data = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
+      where: { id },
       omit: { password: true },
     });
     return plainToInstance(UserResponseDto, data);
   }
 
-  async update(userId: string, dto: UpdateUserDto) {
+  async update(id: string, dto: UpdateUserDto) {
     await this.prisma.user.update({
-      where: { id: userId },
+      where: { id },
       data: dto,
     });
   }
 
-  async remove(userId: string) {
+  async remove(id: string) {
     await this.prisma.user.delete({
-      where: { id: userId },
+      where: { id },
     });
   }
 }

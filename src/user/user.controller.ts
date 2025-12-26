@@ -19,26 +19,25 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @Roles('Admin')
   findAll(@Query() paginate: PaginateDto) {
     return this.userService.findAll(paginate);
   }
 
-  @Get(':userId')
-  findOne(@Param('userId', new ParseUUIDPipe()) userId: string) {
-    return this.userService.findOne(userId);
+  @Get(':id')
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.userService.findOne(id);
   }
 
-  @Patch(':userId')
+  @Patch(':id')
   update(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(userId, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
-  @Delete(':userId')
-  remove(@Param('userId', new ParseUUIDPipe()) userId: string) {
-    return this.userService.remove(userId);
+  @Delete(':id')
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.userService.remove(id);
   }
 }

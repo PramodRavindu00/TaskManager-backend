@@ -7,13 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id String @id @default(uuid()) @db.Uuid
-  email String @unique
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
   firstName String
-  lastName String
-  password String
-  role UserRole
+  lastName  String
+  password  String
+  role      UserRole
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -28,73 +28,71 @@ enum UserRole {
 }
 
 model Project {
-  id String @id @default(uuid()) @db.Uuid
-  name String
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
   description String?
-  createdBy String @db.Uuid
-  createdAt DateTime @default(now())
-  updatedBy String @db.Uuid
-  updatedAt DateTime @updatedAt
+  createdBy   String   @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedBy   String   @db.Uuid
+  updatedAt   DateTime @updatedAt
 
   members ProjectMember[]
-  tasks Task[]
+  tasks   Task[]
 }
 
 model ProjectMember {
-  id String @id @default(uuid()) @db.Uuid
-  userId String @db.Uuid
-  projectId String @db.Uuid
-  role ProjectRole
-  status MemberStatus @default(Active)
-  createdBy String @db.Uuid
-  createdAt DateTime @default(now())
-  updatedBy String @db.Uuid
-  updatedAt DateTime @updatedAt
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  projectId String       @db.Uuid
+  role      ProjectRole
+  status    MemberStatus @default(Active)
+  createdBy String       @db.Uuid
+  createdAt DateTime     @default(now())
+  updatedBy String       @db.Uuid
+  updatedAt DateTime     @updatedAt
 
-  user User @relation(fields: [userId],references: [id])
-  project Project @relation(fields: [projectId],references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
 
-  @@unique([projectId,userId])
+  @@unique([projectId, userId])
 }
 
 enum ProjectRole {
   Admin
   Manager
   Member
- }
+}
 
- enum MemberStatus {
+enum MemberStatus {
   Active
-  Disabled
   Removed
- }
+}
 
- model Task {
-  id String @id @default(uuid()) @db.Uuid
-  type TaskType
-  projectId String? @db.Uuid
-  assignedTo String @db.Uuid
-  title String
+model Task {
+  id          String     @id @default(uuid()) @db.Uuid
+  type        TaskType
+  projectId   String?    @db.Uuid
+  assignedTo  String     @db.Uuid
+  title       String
   description String
-  dueDate DateTime
-  status TaskStatus
-  createdBy String @db.Uuid
-  createdAt DateTime @default(now())
-  updatedBy String @db.Uuid
-  updatedAt DateTime @updatedAt
+  dueDate     DateTime
+  status      TaskStatus
+  createdBy   String     @db.Uuid
+  createdAt   DateTime   @default(now())
+  updatedBy   String     @db.Uuid
+  updatedAt   DateTime   @updatedAt
 
-  user User @relation(fields: [assignedTo],references: [id])
-  project Project? @relation(fields: [projectId],references: [id])
- }
+  user    User     @relation(fields: [assignedTo], references: [id])
+  project Project? @relation(fields: [projectId], references: [id])
+}
 
- enum TaskStatus {
+enum TaskStatus {
   Todo
   InProgress
   Done
- }
+}
 
- enum TaskType {
+enum TaskType {
   Personal
   Project
- }
-
+}

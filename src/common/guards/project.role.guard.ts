@@ -35,16 +35,21 @@ export class ProjectRoleGuard implements CanActivate {
       throw new ForbiddenException('Project context is missing');
     }
 
-    const memberShip = await this.prisma.projectMember.findUnique({
-      where: {
-        projectId_userId: {
-          projectId,
-          userId: user.id,
-        },
-      },
-      select: { role: true, status: true },
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+      include: { members: true },
     });
-    if (!memberShip || memberShip.status !== 'Active') {
+
+    if (!project) {
+      throw new ForbiddenException('Project not found');
+    }
+
+    //extract the current users membership from the project members array
+    const projectMember = project?.members.find(
+      (member) => member?.userId === user?.id,
+    );
+
+    if (projectMember?.status !== 'Active') {
       throw new ForbiddenException('Not a project member');
     }
 
@@ -58,7 +63,7 @@ export class ProjectRoleGuard implements CanActivate {
       return true;
     }
 
-    if (!memberShip?.role || !projectRoles.includes(memberShip?.role)) {
+    if (!projectRoles.includes(projectMember?.role)) {
       throw new ForbiddenException(
         'Insufficient project role to access this resource',
       );

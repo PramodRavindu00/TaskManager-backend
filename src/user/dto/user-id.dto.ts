@@ -1,6 +1,6 @@
 import { IsDefined, IsNotEmpty, IsUUID } from 'class-validator';
 
-export class CreateProjectMemberDto {
+export class UserIdDto {
   @IsDefined()
   @IsNotEmpty()
   @IsUUID()
