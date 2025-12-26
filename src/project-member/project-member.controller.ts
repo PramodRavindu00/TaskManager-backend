@@ -1,5 +1,12 @@
-import { Controller, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ProjectRoleGuard } from '../common/guards/project.role.guard';
 import type { CurrentUserType } from '../common/types/types';
 import { AssignRoleDto } from './dto/assign-role.dto';
@@ -14,6 +21,11 @@ import { Roles } from '../common/decorators/role.decorator';
 @UseGuards(ProjectRoleGuard)
 export class ProjectMemberController {
   constructor(private readonly projectMemberService: ProjectMemberService) {}
+
+  @ApiOperation({
+    summary: 'Add member to the project',
+  })
+  @Post()
   @ProjectRoles('Admin', 'Manager')
   addMember(
     @Param('projectId', new ParseUUIDPipe()) projectId: string,
@@ -23,6 +35,10 @@ export class ProjectMemberController {
     return this.projectMemberService.addMember(projectId, dto, user);
   }
 
+  @ApiOperation({
+    summary: 'Assign project roles',
+  })
+  @Patch(':projectId')
   @ProjectRoles('Admin', 'Manager')
   assignRole(
     @Param('projectId', new ParseUUIDPipe()) projectId: string,
@@ -32,6 +48,10 @@ export class ProjectMemberController {
     return this.projectMemberService.assignRole(projectId, dto, user);
   }
 
+  @ApiOperation({
+    summary: 'Remove member from project',
+  })
+  @Patch(':projectId')
   @ProjectRoles('Admin', 'Manager')
   removeMember(
     @Param('projectId', new ParseUUIDPipe()) projectId: string,

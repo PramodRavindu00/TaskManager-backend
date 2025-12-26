@@ -15,18 +15,21 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { CurrentUserType } from '../common/types/types';
 import { PaginateDto } from '../common/utils/paginate';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ProjectRoleGuard } from '../common/guards/project.role.guard';
 import { ProjectRoles } from '../common/decorators/project.role.decorator';
 import { Roles } from '../common/decorators/role.decorator';
 
 @ApiBearerAuth()
-@UseGuards(ProjectRoleGuard)
 @Controller('project')
 @Roles('User')
+@UseGuards(ProjectRoleGuard)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  @ApiOperation({
+    summary: 'Create new project',
+  })
   @Post()
   create(
     @Body() createProjectDto: CreateProjectDto,
@@ -35,28 +38,40 @@ export class ProjectController {
     return this.projectService.create(createProjectDto, user);
   }
 
+  @ApiOperation({
+    summary: 'Return all projects',
+  })
   @Get()
   findAll(paginate: PaginateDto) {
     return this.projectService.findAll(paginate);
   }
 
-  @Get(':projectId')
-  findOne(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
-    return this.projectService.findOne(projectId);
+  @ApiOperation({
+    summary: 'Return single project',
+  })
+  @Get(':id')
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.projectService.findOne(id);
   }
 
-  @Patch(':projectId')
+  @ApiOperation({
+    summary: 'Update project data',
+  })
+  @Patch(':id')
   @ProjectRoles('Admin')
   update(
-    @Param('projectId', new ParseUUIDPipe()) projectId: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: CurrentUserType,
   ) {
-    return this.projectService.update(projectId, updateProjectDto, user);
+    return this.projectService.update(id, updateProjectDto, user);
   }
 
-  @Delete(':projectId')
-  remove(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
-    return this.projectService.remove(projectId);
+  @ApiOperation({
+    summary: 'Delete project',
+  })
+  @Delete(':id')
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.projectService.remove(id);
   }
 }
