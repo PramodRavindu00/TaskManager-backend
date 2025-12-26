@@ -18,10 +18,12 @@ import { PaginateDto } from '../common/utils/paginate';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ProjectRoleGuard } from '../common/guards/project.role.guard';
 import { ProjectRoles } from '../common/decorators/project.role.decorator';
+import { Roles } from '../common/decorators/role.decorator';
 
 @ApiBearerAuth()
 @UseGuards(ProjectRoleGuard)
 @Controller('project')
+@Roles('User')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 

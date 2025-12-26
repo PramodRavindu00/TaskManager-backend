@@ -21,7 +21,11 @@ export class RoleGuard implements CanActivate {
   }
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<CustomRequest>();
-    const roles = this.reflector.get<UserRole[]>(ROLES, context.getHandler());
+
+    //extract allowed roles from decorator check from method level then from class level
+    const roles =
+      this.reflector.get<UserRole[]>(ROLES, context.getHandler()) ||
+      this.reflector.get<UserRole[]>(ROLES, context.getClass());
 
     // if no user roles were set it means accessible for all user roles
     if (!roles || roles.length === 0) {

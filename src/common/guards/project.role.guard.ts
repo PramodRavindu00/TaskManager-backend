@@ -53,11 +53,10 @@ export class ProjectRoleGuard implements CanActivate {
       throw new ForbiddenException('Not a project member');
     }
 
-    //resolve allowed project roles
-    const projectRoles = this.reflector.get<ProjectRole[]>(
-      PROJECT_ROLES,
-      context.getHandler(),
-    );
+    //extract allowed project roles from decorator  check from method level then from class level
+    const projectRoles =
+      this.reflector.get<ProjectRole[]>(PROJECT_ROLES, context.getHandler()) ||
+      this.reflector.get<ProjectRole[]>(PROJECT_ROLES, context.getClass());
     // if no project roles were set it means accessible for all project roles
     if (!projectRoles || projectRoles.length === 0) {
       return true;
@@ -65,7 +64,7 @@ export class ProjectRoleGuard implements CanActivate {
 
     if (!projectRoles.includes(projectMember?.role)) {
       throw new ForbiddenException(
-        'Insufficient project role to access this resource',
+        `User's project role doesn't have access to this resource`,
       );
     }
     return true;

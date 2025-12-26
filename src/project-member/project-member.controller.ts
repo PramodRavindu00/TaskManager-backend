@@ -6,9 +6,11 @@ import { AssignRoleDto } from './dto/assign-role.dto';
 import { ProjectRoles } from '../common/decorators/project.role.decorator';
 import { UserIdDto } from '../user/dto/user-id.dto';
 import { ProjectMemberService } from './project-member.service';
+import { Roles } from '../common/decorators/role.decorator';
 
 @ApiBearerAuth()
 @Controller('project-member')
+@Roles('User') //users only
 @UseGuards(ProjectRoleGuard)
 export class ProjectMemberController {
   constructor(private readonly projectMemberService: ProjectMemberService) {}

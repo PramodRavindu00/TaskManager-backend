@@ -11,9 +11,11 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from '../common/decorators/role.decorator';
 
 @ApiBearerAuth()
 @Controller('task')
+@Roles('User') //users only can access this endpoint
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
