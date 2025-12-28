@@ -1,3 +1,4 @@
+import { ProjectMemberShipResponseDto } from './../project-member/dto/project-membership-response.dto';
 import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -5,6 +6,7 @@ import { PrismaService } from '../common/prisma/prisma.service';
 import { Prisma, ProjectRole } from '@prisma/client';
 import { CurrentUserType } from '../common/types/types';
 import paginateData, { PaginateDto } from '../common/utils/paginate';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ProjectService {
@@ -53,5 +55,13 @@ export class ProjectService {
 
   remove(projectId: string) {
     return `This action removes a #${projectId} project`;
+  }
+
+  async getAllUserProjects(user: CurrentUserType) {
+    const data = await this.prisma.projectMember.findMany({
+      where: { userId: user.id },
+      include: { project: true },
+    });
+    return { data: plainToInstance(ProjectMemberShipResponseDto, data) };
   }
 }

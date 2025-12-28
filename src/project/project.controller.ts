@@ -23,7 +23,6 @@ import { Roles } from '../common/decorators/role.decorator';
 @ApiBearerAuth()
 @Controller('project')
 @Roles('User')
-@UseGuards(ProjectRoleGuard)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
@@ -46,32 +45,41 @@ export class ProjectController {
     return this.projectService.findAll(paginate);
   }
 
+  @Get('my-projects')
+  getAllUserProjects(@CurrentUser() user: CurrentUserType) {
+    return this.projectService.getAllUserProjects(user);
+  }
+
   @ApiOperation({
     summary: 'Return single project',
   })
-  @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.projectService.findOne(id);
+  @Get(':projectId')
+  @UseGuards(ProjectRoleGuard)
+  findOne(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
+    return this.projectService.findOne(projectId);
   }
 
   @ApiOperation({
     summary: 'Update project data',
   })
-  @Patch(':id')
+  @Patch(':projectId')
+  @UseGuards(ProjectRoleGuard)
   @ProjectRoles('Admin')
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('projectId', new ParseUUIDPipe()) projectId: string,
     @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: CurrentUserType,
   ) {
-    return this.projectService.update(id, updateProjectDto, user);
+    return this.projectService.update(projectId, updateProjectDto, user);
   }
 
   @ApiOperation({
     summary: 'Delete project',
   })
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.projectService.remove(id);
+  @Delete(':projectId')
+  @UseGuards(ProjectRoleGuard)
+  @ProjectRoles('Admin')
+  remove(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
+    return this.projectService.remove(projectId);
   }
 }
