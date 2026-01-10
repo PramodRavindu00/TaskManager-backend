@@ -11,6 +11,7 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class ProjectService {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(createProjectDto: CreateProjectDto, user: CurrentUserType) {
     await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const project = await tx.project.create({
@@ -38,10 +39,6 @@ export class ProjectService {
     return { data, count };
   }
 
-  findOne(projectId: string) {
-    return `This action returns a #${projectId} project`;
-  }
-
   async update(
     projectId: string,
     updateProjectDto: UpdateProjectDto,
@@ -51,10 +48,6 @@ export class ProjectService {
       where: { id: projectId },
       data: { ...updateProjectDto, updatedBy: user.id },
     });
-  }
-
-  remove(projectId: string) {
-    return `This action removes a #${projectId} project`;
   }
 
   async getAllUserProjects(user: CurrentUserType) {
