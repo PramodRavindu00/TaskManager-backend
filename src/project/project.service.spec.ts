@@ -42,11 +42,12 @@ describe('ProjectService', () => {
         description: 'Test Description',
       };
 
-      // const projectCreateSpy = jest
-      //   .fn()
-      //   .mockResolvedValue({ id: 'proj-1', ...dto });
-      // const projectMemberCreateSpy = jest.fn().mockResolvedValue({});
+      const projectCreateSpy = jest
+        .fn()
+        .mockResolvedValue({ id: 'proj-1', ...dto });
+      const projectMemberCreateSpy = jest.fn().mockResolvedValue({});
     });
+    test('should throw if transaction fails', async () => {});
   });
   describe('Find All', () => {
     test('should return paginated response of all projects', async () => {});

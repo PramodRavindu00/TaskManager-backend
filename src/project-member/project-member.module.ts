@@ -4,6 +4,6 @@ import { ProjectMemberController } from './project-member.controller';
 
 @Module({
   providers: [ProjectMemberService],
-  controllers: [ProjectMemberController]
+  controllers: [ProjectMemberController],
 })
 export class ProjectMemberModule {}

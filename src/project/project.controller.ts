@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
@@ -51,15 +50,6 @@ export class ProjectController {
   }
 
   @ApiOperation({
-    summary: 'Return single project',
-  })
-  @Get(':projectId')
-  @UseGuards(ProjectRoleGuard)
-  findOne(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
-    return this.projectService.findOne(projectId);
-  }
-
-  @ApiOperation({
     summary: 'Update project data',
   })
   @Patch(':projectId')
@@ -71,15 +61,5 @@ export class ProjectController {
     @CurrentUser() user: CurrentUserType,
   ) {
     return this.projectService.update(projectId, updateProjectDto, user);
-  }
-
-  @ApiOperation({
-    summary: 'Delete project',
-  })
-  @Delete(':projectId')
-  @UseGuards(ProjectRoleGuard)
-  @ProjectRoles('Admin')
-  remove(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
-    return this.projectService.remove(projectId);
   }
 }
