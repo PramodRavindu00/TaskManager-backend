@@ -15,10 +15,10 @@ import { JwtPayload } from '../common/types/types';
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async signup(signUpDto: SignUpDto) {
+  async signup(signUpDto: SignUpDto): Promise<void> {
     const { email, password, firstName, lastName } = signUpDto;
     const emailInUse = await this.prisma.user.findUnique({ where: { email } });
     if (emailInUse) {
@@ -37,7 +37,9 @@ export class AuthService {
     });
   }
 
-  async login(loginDto: LoginDto) {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { email, password } = loginDto;
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new UnauthorizedException('Invalid credentials');
